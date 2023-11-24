@@ -14,70 +14,69 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.breathe.exceptions.RestNotFoundException;
-import com.example.breathe.models.Diagnostico;
-import com.example.breathe.repository.DiagnosticoRepository;
+import com.example.breathe.models.Cidade;
+import com.example.breathe.repository.CidadeRepository;
 
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
 @SecurityRequirement(name = "bearer-key")
-@Tag(name = "Diagnosticos")
-@RequestMapping("/api/diagnosticos")
-public class DiagnosticoController {
-
+@Tag(name = "Cidade")
+@RequestMapping("/api/cidades")
+public class CidadeController {
     
     @Autowired
-    DiagnosticoRepository diagnosticoRepository;
+    CidadeRepository cidadeRepository;
 
     @Autowired
     PagedResourcesAssembler<Object> assembler;
 
     @GetMapping
     public PagedModel<EntityModel<Object>> index(@RequestParam(required = false) String busca, @PageableDefault(size = 10) Pageable pageable){
-        Page<Diagnostico> diagnostico = diagnosticoRepository.findAll(pageable);
+        Page<Cidade> cidade = cidadeRepository.findAll(pageable);
 
-        return assembler.toModel(diagnostico.map(Diagnostico::toEntityModel));
+        return assembler.toModel(cidade.map(Cidade::toEntityModel));
     }
 
     @PostMapping
-    public ResponseEntity<Diagnostico> create(@RequestBody @Valid Diagnostico diagnostico){
-        diagnosticoRepository.save(diagnostico);
-        return ResponseEntity.status(HttpStatus.CREATED).body(diagnostico);
+    public ResponseEntity<Cidade> create(@RequestBody @Valid Cidade cidade){
+        cidadeRepository.save(cidade);
+        return ResponseEntity.status(HttpStatus.CREATED).body(cidade);
     }
 
     @GetMapping("{id}")
-    public EntityModel<Diagnostico> show(@PathVariable long id) {
-        var diagnostico = diagnosticoRepository.findById(id).orElseThrow(() -> new RestNotFoundException("diagnostico nao encontrada"));
-        return diagnostico.toEntityModel();
+    public EntityModel<Cidade> show(@PathVariable long id) {
+        var cidade = cidadeRepository.findById(id).orElseThrow(() -> new RestNotFoundException("Cidade nao encontrada"));
+        return cidade.toEntityModel();
     }
 
-    @PutMapping("{id}")
-    public EntityModel<Diagnostico> update(@PathVariable Long id, @RequestBody @Valid Diagnostico diagnostico){
+        @PutMapping("{id}")
+    public EntityModel<Cidade> update(@PathVariable Long id, @RequestBody @Valid Cidade cidade){
 
-        diagnosticoRepository.findById(id).orElseThrow(() -> new RestNotFoundException("Erro ao apagar, diagnostico não encontrada"));
+        cidadeRepository.findById(id).orElseThrow(() -> new RestNotFoundException("Erro ao apagar, doenca não encontrada"));
 
-        diagnostico.setId(id);
-        diagnosticoRepository.save(diagnostico);
+        cidade.setId(id);
+        cidadeRepository.save(cidade);
 
-        return diagnostico.toEntityModel();
+        return cidade.toEntityModel();
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<Diagnostico> destroy(@PathVariable Long id){
+    public ResponseEntity<Cidade> destroy(@PathVariable Long id){
 
-        var diagnostico = diagnosticoRepository.findById(id).orElseThrow(()-> new RestNotFoundException("Erro ao apagar, doenca não encontrada"));
+        var cidade = cidadeRepository.findById(id).orElseThrow(()-> new RestNotFoundException("Erro ao apagar, doenca não encontrada"));
         
-        diagnosticoRepository.delete(diagnostico);
+        cidadeRepository.delete(cidade);
         return ResponseEntity.noContent().build();
-
     }
+
 
 }

@@ -1,5 +1,12 @@
 package com.example.breathe.models;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
+import org.springframework.hateoas.EntityModel;
+
+import com.example.breathe.controllers.CidadeController;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -32,5 +39,14 @@ public class Cidade {
 
     @ManyToOne
     private Estado estado;  
+
+    public EntityModel<Cidade> toEntityModel() {
+    return EntityModel.of(
+        this,
+        linkTo(methodOn(CidadeController.class).show(id)).withSelfRel(),
+        // linkTo(methodOn(CidadeController.class).index(null, Pageable.unpaged())).withRel("all"),
+        linkTo(methodOn(CidadeController.class).show(id)).withRel("destroy")  
+    ); 
+}
 
 }

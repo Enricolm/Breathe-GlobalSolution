@@ -14,68 +14,68 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.breathe.exceptions.RestNotFoundException;
-import com.example.breathe.models.Diagnostico;
-import com.example.breathe.repository.DiagnosticoRepository;
+import com.example.breathe.models.Logradouro;
+import com.example.breathe.repository.LogradouroRepository;
 
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
 @SecurityRequirement(name = "bearer-key")
-@Tag(name = "Diagnosticos")
-@RequestMapping("/api/diagnosticos")
-public class DiagnosticoController {
-
+@Tag(name = "Logradouros")
+@RequestMapping("/api/logradouros")
+public class LogradouroController {
     
     @Autowired
-    DiagnosticoRepository diagnosticoRepository;
+    LogradouroRepository logradouroRepository;
 
     @Autowired
     PagedResourcesAssembler<Object> assembler;
 
+    
     @GetMapping
     public PagedModel<EntityModel<Object>> index(@RequestParam(required = false) String busca, @PageableDefault(size = 10) Pageable pageable){
-        Page<Diagnostico> diagnostico = diagnosticoRepository.findAll(pageable);
+        Page<Logradouro> logradouro = logradouroRepository.findAll(pageable);
 
-        return assembler.toModel(diagnostico.map(Diagnostico::toEntityModel));
+        return assembler.toModel(logradouro.map(Logradouro::toEntityModel));
     }
 
     @PostMapping
-    public ResponseEntity<Diagnostico> create(@RequestBody @Valid Diagnostico diagnostico){
-        diagnosticoRepository.save(diagnostico);
-        return ResponseEntity.status(HttpStatus.CREATED).body(diagnostico);
+    public ResponseEntity<Logradouro> create(@RequestBody @Valid Logradouro logradouro){
+        logradouroRepository.save(logradouro);
+        return ResponseEntity.status(HttpStatus.CREATED).body(logradouro);
     }
 
     @GetMapping("{id}")
-    public EntityModel<Diagnostico> show(@PathVariable long id) {
-        var diagnostico = diagnosticoRepository.findById(id).orElseThrow(() -> new RestNotFoundException("diagnostico nao encontrada"));
-        return diagnostico.toEntityModel();
+    public EntityModel<Logradouro> show(@PathVariable long id) {
+        var logradouro = logradouroRepository.findById(id).orElseThrow(() -> new RestNotFoundException("doenca nao encontrada"));
+        return logradouro.toEntityModel();
     }
 
     @PutMapping("{id}")
-    public EntityModel<Diagnostico> update(@PathVariable Long id, @RequestBody @Valid Diagnostico diagnostico){
+    public EntityModel<Logradouro> update(@PathVariable Long id, @RequestBody @Valid Logradouro logradouro){
 
-        diagnosticoRepository.findById(id).orElseThrow(() -> new RestNotFoundException("Erro ao apagar, diagnostico não encontrada"));
+        logradouroRepository.findById(id).orElseThrow(() -> new RestNotFoundException("Erro ao apagar, doenca não encontrada"));
 
-        diagnostico.setId(id);
-        diagnosticoRepository.save(diagnostico);
+        logradouro.setId(id);
+        logradouroRepository.save(logradouro);
 
-        return diagnostico.toEntityModel();
+        return logradouro.toEntityModel();
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<Diagnostico> destroy(@PathVariable Long id){
+    public ResponseEntity<Logradouro> destroy(@PathVariable Long id){
 
-        var diagnostico = diagnosticoRepository.findById(id).orElseThrow(()-> new RestNotFoundException("Erro ao apagar, doenca não encontrada"));
+        var logradouro = logradouroRepository.findById(id).orElseThrow(()-> new RestNotFoundException("Erro ao apagar, doenca não encontrada"));
         
-        diagnosticoRepository.delete(diagnostico);
+        logradouroRepository.delete(logradouro);
         return ResponseEntity.noContent().build();
 
     }

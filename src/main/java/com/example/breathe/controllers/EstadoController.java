@@ -9,22 +9,20 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.breathe.exceptions.RestNotFoundException;
-import com.example.breathe.models.Doenca;
 import com.example.breathe.models.Estado;
 import com.example.breathe.repository.EstadoRepository;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -49,19 +47,36 @@ public class EstadoController {
     }
 
     @PostMapping
-    public ResponseEntity<Estado> create(@RequestBody @Valid Estado estado) {
-        // Adicione logs para depuração
-        System.out.println("Estado recebido: " + estado);
-    
+    public ResponseEntity<Estado> create(@RequestBody @Valid Estado estado){
         estadoRepository.save(estado);
         return ResponseEntity.status(HttpStatus.CREATED).body(estado);
     }
-
 
     @GetMapping("{id}")
     public EntityModel<Estado> show(@PathVariable long id) {
         var estado = estadoRepository.findById(id).orElseThrow(() -> new RestNotFoundException("doenca nao encontrada"));
         return estado.toEntityModel();
+    }
+
+    @PutMapping("{id}")
+    public EntityModel<Estado> update(@PathVariable Long id, @RequestBody @Valid Estado estado){
+
+        estadoRepository.findById(id).orElseThrow(() -> new RestNotFoundException("Erro ao apagar, doenca não encontrada"));
+
+        estado.setId(id);
+        estadoRepository.save(estado);
+
+        return estado.toEntityModel();
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<Estado> destroy(@PathVariable Long id){
+
+        var estado = estadoRepository.findById(id).orElseThrow(()-> new RestNotFoundException("Erro ao apagar, doenca não encontrada"));
+        
+        estadoRepository.delete(estado);
+        return ResponseEntity.noContent().build();
+
     }
     
 }

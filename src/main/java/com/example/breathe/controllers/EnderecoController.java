@@ -20,8 +20,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.breathe.exceptions.RestNotFoundException;
-import com.example.breathe.models.Diagnostico;
-import com.example.breathe.repository.DiagnosticoRepository;
+import com.example.breathe.models.Endereco;
+import com.example.breathe.models.Estado;
+import com.example.breathe.repository.EnderecoRepository;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -29,53 +30,52 @@ import jakarta.validation.Valid;
 
 @RestController
 @SecurityRequirement(name = "bearer-key")
-@Tag(name = "Diagnosticos")
-@RequestMapping("/api/diagnosticos")
-public class DiagnosticoController {
+@Tag(name = "Endereco")
+@RequestMapping("/api/endereco")
+public class EnderecoController {
 
-    
     @Autowired
-    DiagnosticoRepository diagnosticoRepository;
+    EnderecoRepository enderecoRepository;
 
     @Autowired
     PagedResourcesAssembler<Object> assembler;
-
+    
     @GetMapping
     public PagedModel<EntityModel<Object>> index(@RequestParam(required = false) String busca, @PageableDefault(size = 10) Pageable pageable){
-        Page<Diagnostico> diagnostico = diagnosticoRepository.findAll(pageable);
+        Page<Endereco> endereco = enderecoRepository.findAll(pageable);
 
-        return assembler.toModel(diagnostico.map(Diagnostico::toEntityModel));
+        return assembler.toModel(endereco.map(Endereco::toEntityModel));
     }
 
     @PostMapping
-    public ResponseEntity<Diagnostico> create(@RequestBody @Valid Diagnostico diagnostico){
-        diagnosticoRepository.save(diagnostico);
-        return ResponseEntity.status(HttpStatus.CREATED).body(diagnostico);
+    public ResponseEntity<Endereco> create(@RequestBody @Valid Endereco endereco){
+        enderecoRepository.save(endereco);
+        return ResponseEntity.status(HttpStatus.CREATED).body(endereco);
     }
 
     @GetMapping("{id}")
-    public EntityModel<Diagnostico> show(@PathVariable long id) {
-        var diagnostico = diagnosticoRepository.findById(id).orElseThrow(() -> new RestNotFoundException("diagnostico nao encontrada"));
-        return diagnostico.toEntityModel();
+    public EntityModel<Endereco> show(@PathVariable long id) {
+        var endereco = enderecoRepository.findById(id).orElseThrow(() -> new RestNotFoundException("doenca nao encontrada"));
+        return endereco.toEntityModel();
     }
 
     @PutMapping("{id}")
-    public EntityModel<Diagnostico> update(@PathVariable Long id, @RequestBody @Valid Diagnostico diagnostico){
+    public EntityModel<Endereco> update(@PathVariable Long id, @RequestBody @Valid Endereco endereco){
 
-        diagnosticoRepository.findById(id).orElseThrow(() -> new RestNotFoundException("Erro ao apagar, diagnostico não encontrada"));
+        enderecoRepository.findById(id).orElseThrow(() -> new RestNotFoundException("Erro ao apagar, doenca não encontrada"));
 
-        diagnostico.setId(id);
-        diagnosticoRepository.save(diagnostico);
+        endereco.setId(id);
+        enderecoRepository.save(endereco);
 
-        return diagnostico.toEntityModel();
+        return endereco.toEntityModel();
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<Diagnostico> destroy(@PathVariable Long id){
+    public ResponseEntity<Endereco> destroy(@PathVariable Long id){
 
-        var diagnostico = diagnosticoRepository.findById(id).orElseThrow(()-> new RestNotFoundException("Erro ao apagar, doenca não encontrada"));
+        var endereco = enderecoRepository.findById(id).orElseThrow(()-> new RestNotFoundException("Erro ao apagar, doenca não encontrada"));
         
-        diagnosticoRepository.delete(diagnostico);
+        enderecoRepository.delete(endereco);
         return ResponseEntity.noContent().build();
 
     }

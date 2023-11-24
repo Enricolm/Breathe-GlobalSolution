@@ -1,5 +1,11 @@
 package com.example.breathe.models;
 
+import org.springframework.hateoas.EntityModel;
+
+import com.example.breathe.controllers.LogradouroController;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -35,5 +41,14 @@ public class Logradouro {
 
     @ManyToOne
     private Bairro bairro;
+
+    public EntityModel<Logradouro> toEntityModel() {
+        return EntityModel.of(
+            this,
+            linkTo(methodOn(LogradouroController.class).show(id)).withSelfRel(),
+            // linkTo(methodOn(LogradouroController.class).index(null, Pageable.unpaged())).withRel("all"),
+            linkTo(methodOn(LogradouroController.class).show(id)).withRel("destroy")  
+    ); 
+    }
 
 }

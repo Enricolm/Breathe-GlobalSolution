@@ -6,8 +6,6 @@ import com.example.breathe.controllers.DoencaController;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
-import org.springframework.data.domain.Pageable;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -39,6 +37,9 @@ public class Doenca {
     @NotBlank @Size(min = 3, max = 255)
     private String recomendacao; 
     
+
+
+
 
     public EntityModel<Doenca> toEntityModel() {
         return EntityModel.of(
